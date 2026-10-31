@@ -1,71 +1,92 @@
-# Australian Rain Prediction & Model Explainability
+# Australian Rain Prediction
 
-A comprehensive Machine Learning pipeline in Python that predicts whether it will rain tomorrow in Australia. The project covers data preprocessing, advanced missing value imputation, öznitelik seçimi (feature selection), classifier training, and model explainability using permutation importance.
+Explore Australian weather data, missing-value imputation, binary classification, and feature importance in a Jupyter notebook.
 
----
+This research project uses the bundled `weatherAUS.csv` to investigate the `RainTomorrow` label. It is an exploratory experiment; its current preprocessing does not establish an independent estimate of forecasting performance.
 
-## 🚀 Key Features
+## Key Features
 
-* **MICE Imputation**: Implements **Multivariate Imputation by Chained Equations (MICE)** using `IterativeImputer` to reconstruct missing values in weather attributes (such as temperature, wind speed, pressure, and humidity).
-* **Class Imbalance Resolution**: Utilizes resampling techniques to manage skewed classification categories.
-* **Feature Selection**: Employs `SelectKBest` and Random Forest `SelectFromModel` to identify the most predictive feature subsets.
-* **Model Explainability (ELI5)**: Computes **Permutation Importance** using the `eli5` library to calculate the feature weights contributing to predictions, providing clarity on model decisions.
-* **Classifier Modeling**: Trains multiple binary classifiers (including Random Forest and XGBoost) to optimize predicting target labels.
+- Weather-data exploration and class-distribution plots.
+- Minority-class oversampling and iterative numeric imputation.
+- Chi-squared and Random Forest feature selection.
+- XGBoost classification, confusion matrices, ROC curves, and probability-based ROC AUC.
+- ELI5 permutation importance and decision-region visualization with mlxtend.
 
----
+## Tech Stack
 
-## 📁 Repository Structure
+Python, Jupyter, pandas, NumPy, Matplotlib, Seaborn, scikit-learn, XGBoost, ELI5, and mlxtend. Runtime dependency ranges are in [requirements.txt](requirements.txt).
 
+## Architecture & Project Structure
+
+The notebook executes sequentially: load data, explore and resample, impute and filter, select features, split and scale, train, and evaluate.
+
+```text
+.
+├── Aus_P.ipynb         # Analysis, modeling, and visualizations
+├── weatherAUS.csv      # Bundled observations
+├── requirements.txt   # Runtime dependencies
+├── tests/             # Dataset-loading and scaling regression tests
+└── LICENSE
 ```
-australian-rain-prediction/
-├── Aus_P.ipynb          ← Jupyter Notebook executing data loading, MICE, training & ELI5
-├── weatherAUS.csv       ← Weather dataset containing daily observations across Australia
-├── LICENSE              ← MIT License
-├── requirements.txt     ← Project dependencies
-├── .gitignore           ← Git ignore file
-└── README.md            ← Project documentation (This file)
+
+**Methodological limitations:** oversampling, imputation, outlier filtering, and feature selection happen before the train/test split. Oversampling can place copies of an observation in both sets. Permutation importance is also computed on fitted data. These steps can inflate evaluation results; move learned preprocessing and resampling inside training folds before interpreting scores as generalization performance.
+
+## Getting Started
+
+Use Python 3.11 in an isolated environment. The dependency ranges are not a lockfile.
+
+```bash
+git clone https://github.com/MustafArikan/australian-rain-prediction.git
+cd australian-rain-prediction
+python -m venv .venv
 ```
 
----
+Activate with `source .venv/bin/activate` on Linux/macOS or `.venv\Scripts\Activate.ps1` in PowerShell, then install:
 
-## 📦 Requirements & Dependencies
+```bash
+python -m pip install -r requirements.txt
+python -m pip install notebook
+```
 
-The project requires Python 3.8+ and the following libraries:
+## Configuration
 
-* **numpy** >= 1.22.0
-* **pandas** >= 1.4.0
-* **matplotlib** >= 3.5.0
-* **seaborn** >= 0.11.0
-* **scikit-learn** >= 1.0.0
-* **eli5** >= 0.13.0
-* **xgboost** >= 1.6.0
+No environment variables or credentials are required. Start Jupyter from the repository root so `weatherAUS.csv` resolves correctly. The notebook contains modeling parameters, including the split seed and XGBoost settings.
 
----
+## Usage
 
-## ⚙️ Quick Start
-
-### Prerequisites
-* Python 3.8 or higher installed.
-
-### Installation
-1. Clone the repository to your local directory:
-   ```bash
-   git clone https://github.com/MustafArikan/australian-rain-prediction.git
-   cd australian-rain-prediction
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Running the Project
-Open Jupyter Notebook to run the cells sequentially:
 ```bash
 jupyter notebook Aus_P.ipynb
 ```
 
----
+Run cells in order in a fresh kernel. Imputation, resampling, pair plots, and training can consume substantial memory and time. Results remain in notebook outputs unless explicitly exported.
 
-## 📄 License
+## Testing
 
-Distributed under the MIT License. See `LICENSE` for more information.
+```bash
+python -m unittest discover -s tests
+```
+
+The tests execute the notebook's loading and split/scaling cells. They verify that the bundled data loads and that test features use the scaler fitted on training data. They do not certify the full experiment's statistical validity.
+
+## Development & Quality
+
+Keep changes to notebook source focused and clear affected outputs when their results become stale. No application build or deployment pipeline is configured. Use `python -m pip check` to inspect installed dependency consistency.
+
+## Roadmap
+
+- Split original observations before any learned preprocessing or resampling.
+- Evaluate on an untouched, preferably time-aware holdout and report reproducible metrics.
+- Fit feature selection and imputation within cross-validation folds.
+- Record dataset provenance and a tested dependency lock.
+
+## Contributing
+
+Open an issue or pull request with the experiment, random seeds, dependency versions, and validation performed. Preserve the target definition and distinguish historical outputs from newly reproduced results.
+
+## License
+
+Code is distributed under the [MIT License](LICENSE). Check the source dataset's terms before redistributing data.
+
+## Author
+
+[Mustafa Arıkan](https://github.com/MustafArikan)
